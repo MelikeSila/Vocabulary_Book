@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <TextView
+        android:id="@+id/word_text_view"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="108dp"
+        android:layout_marginBottom="440dp"
+        android:background="@android:color/holo_green_light"
+        android:gravity="center"
+        android:text="Front"
+        android:textColor="#005A96"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="236dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="Save"
+        app:layout_constraintEnd_toStartOf="@+id/flip_button"
+        app:layout_constraintHorizontal_bias="0.689"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/word_text_view" />
+
+    <Button
+        android:id="@+id/flip_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="236dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="24dp"
+        android:text="Flip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/word_text_view" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/word_text_view"
+        app:layout_constraintStart_toStartOf="@+id/word_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/word_text_view"
+        app:srcCompat="@android:drawable/btn_star_big_on" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/flip_button"
+        app:layout_constraintEnd_toEndOf="@+id/word_text_view"
+        app:layout_constraintStart_toStartOf="@+id/word_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/word_text_view"
+        app:layout_constraintVertical_bias="0.012"
+        app:srcCompat="@android:drawable/btn_star_big_off" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/save_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
