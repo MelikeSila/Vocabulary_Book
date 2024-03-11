@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,9 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        var sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE);
+
+
         /// Flip the card
         val word_text_view = root.findViewById<TextView>(R.id.word_text_view)
         word_text_view.setOnClickListener{
@@ -59,16 +63,33 @@ class HomeFragment : Fragment() {
         flipBtn.setOnClickListener {
             flip(word_text_view)
         }
-        var is_saved = false
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+
+        val offIcon = R.drawable.ic_star_off
+        val onIcon = R.drawable.ic_star_on
+        var currentIcon =  sharedPref?.getInt("selected_icon_resource_id", offIcon);
+
         val starBtn = root.findViewById<ImageView>(R.id.imageView2)
+        if (currentIcon != null) {
+            starBtn.setImageResource(currentIcon)
+        }
         starBtn.setOnClickListener {
             //btn_star_big_on
-            if (is_saved){
-                starBtn.setImageResource(com.example.vocabularybook.R.drawable.ic_star_off)
-                is_saved = false
+            if (currentIcon != offIcon){
+
+                if (sharedPref != null) {
+                    favoriteUpdate(root, offIcon, sharedPref)
+                }
+                starBtn.setImageResource(offIcon)
+                currentIcon = offIcon
+
             }else {
-                starBtn.setImageResource(R.drawable.ic_star_on)
-                is_saved = true
+
+                if (sharedPref != null) {
+                    favoriteUpdate(root, onIcon, sharedPref)
+                }
+                starBtn.setImageResource(onIcon)
+                currentIcon = onIcon
             }
 
         }
@@ -118,6 +139,15 @@ class HomeFragment : Fragment() {
         }?.apply()
 
         Toast.makeText(this.context, "Data saved!", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun favoriteUpdate(root: View, newIcon: Int, sharedPref: SharedPreferences ){
+        if (sharedPref != null) {
+            with (sharedPref?.edit()) {
+                this?.putInt("selected_icon_resource_id", newIcon)
+                this?.apply()
+            }
+        }
     }
 
     override fun onDestroyView() {
