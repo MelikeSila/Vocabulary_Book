@@ -157,8 +157,10 @@ class HomeFragment : Fragment() {
     private fun loadData(root: View) {
         val sharedPreferences = activity?.getSharedPreferences("EnglishSharedPreferences", Context.MODE_PRIVATE)
         val savedString = sharedPreferences?.getString("STRING_KEY", null)
+        val lastWord = sharedPreferences?.getString("LAST_WORD", null)
 
         root.findViewById<TextView>(R.id.textView).text = savedString
+        root.findViewById<TextView>(R.id.word_text_view).text = lastWord
 
     }
 
@@ -176,6 +178,19 @@ class HomeFragment : Fragment() {
         Toast.makeText(this.context, "Data saved!", Toast.LENGTH_SHORT).show()
     }
 
+    private fun saveLastWord(root: View){
+        val lastWord = root.findViewById<TextView>(R.id.word_text_view).text.toString()
+
+        val sharedPreferences = activity?.getSharedPreferences("EnglishSharedPreferences", Context.MODE_PRIVATE)
+        val editor = sharedPreferences?.edit()
+        editor?.apply {
+            putString("LAST_WORD", lastWord)
+            //putBoolean("BOOLEAN_KEY", )
+        }?.apply()
+
+        Toast.makeText(this.context, "Last word saved!", Toast.LENGTH_SHORT).show()
+    }
+
     private fun favoriteUpdate(root: View, newIcon: Int, sharedPref: SharedPreferences ){
         if (sharedPref != null) {
             with (sharedPref?.edit()) {
@@ -183,6 +198,11 @@ class HomeFragment : Fragment() {
                 this?.apply()
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        saveLastWord(binding.root)
     }
 
     override fun onDestroyView() {
