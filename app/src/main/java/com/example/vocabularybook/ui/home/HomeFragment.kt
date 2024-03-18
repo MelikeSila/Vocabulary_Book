@@ -42,13 +42,6 @@ class HomeFragment : Fragment() {
 
         var sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE);
 
-
-        /// Flip the card
-        val word_text_view = root.findViewById<TextView>(R.id.word_text_view)
-        word_text_view.setOnClickListener{
-            flip(word_text_view)
-        }
-
         // load data
 
         loadData(root)
@@ -59,16 +52,36 @@ class HomeFragment : Fragment() {
             saveData(root)
         }
 
+        /// Flip the card
+        val word_text_view = root.findViewById<TextView>(R.id.word_text_view)
+        word_text_view.setOnClickListener{
+            var currentText = setNewText(word_text_view.text)
+            flip(word_text_view, currentText)
+        }
+
+        // Flip button
         val flipBtn = root.findViewById<Button>(R.id.flip_button)
         flipBtn.setOnClickListener {
-            flip(word_text_view)
+            var currentText = ""
+            if ( word_text_view.text == "Front"){
+                currentText = "Back"
+            }else if ( word_text_view.text == "Back"){
+                currentText = "Front"
+            }else if ( word_text_view.text == "New Word"){
+                currentText = "Another New Word"
+            }else{
+                currentText = "New Word"
+            }
+            flip(word_text_view, currentText)
         }
+
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
         val offIcon = R.drawable.ic_star_off
         val onIcon = R.drawable.ic_star_on
         var currentIcon =  sharedPref?.getInt("selected_icon_resource_id", offIcon);
 
+        // Star button
         val starBtn = root.findViewById<ImageView>(R.id.imageView2)
         if (currentIcon != null) {
             starBtn.setImageResource(currentIcon)
@@ -94,10 +107,37 @@ class HomeFragment : Fragment() {
 
         }
 
+        // Next button
+        val nextBtn = root.findViewById<Button>(R.id.button2)
+        nextBtn.setOnClickListener {
+            var currentText = ""
+            if ( word_text_view.text == "Front" || word_text_view.text == "Back"){
+                currentText = "New Word"
+            }else{
+                currentText = "Front"
+            }
+            flip(word_text_view, currentText)
+        }
+
+
         return root
     }
 
-    private fun flip(textView: TextView){
+    private fun setNewText(controlText: CharSequence):String{
+        var currentText = ""
+        if ( controlText == "Front"){
+            currentText = "Back"
+        }else if ( controlText == "Back"){
+            currentText = "Front"
+        }else if ( controlText == "New Word"){
+            currentText = "Another New Word"
+        }else{
+            currentText = "New Word"
+        }
+        return currentText
+    }
+
+    private fun flip(textView: TextView, current_text:String){
         val anim_1 = ObjectAnimator.ofFloat(textView, "scaleX", 1f, 0f)
         val anim_2 = ObjectAnimator.ofFloat(textView, "scaleX", 0f, 1f)
 
@@ -107,13 +147,8 @@ class HomeFragment : Fragment() {
         anim_1.addListener(object: AnimatorListenerAdapter(){
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                if ( textView.text == "Front"){
-                    textView.text = "Back"
-                    anim_2.start()
-                }else{
-                    textView.text = "Front"
-                    anim_2.start()
-                }
+                textView.text = current_text
+                anim_2.start()
             }
         })
         anim_1.start()
