@@ -54,4 +54,6 @@ dependencies {
 
     implementation ("androidx.compose.material3:material3:1.0.0-alpha02")
 
+    implementation ("com.google.mlkit:translate:17.0.2")
+
 }

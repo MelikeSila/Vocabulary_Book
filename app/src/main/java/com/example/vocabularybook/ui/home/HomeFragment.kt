@@ -3,9 +3,11 @@ package com.example.vocabularybook.ui.home
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.vocabularybook.R
 import com.example.vocabularybook.databinding.FragmentHomeBinding
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.TranslatorOptions
 
 class HomeFragment : Fragment() {
 
@@ -46,6 +52,7 @@ class HomeFragment : Fragment() {
 
         loadData(root)
 
+
         // save data
         val saveBtn = root.findViewById<Button>(R.id.save_button)
         saveBtn.setOnClickListener{
@@ -55,13 +62,17 @@ class HomeFragment : Fragment() {
         /// Flip the card
         val word_text_view = root.findViewById<TextView>(R.id.word_text_view)
         word_text_view.setOnClickListener{
-            var currentText = setNewText(word_text_view.text)
-            flip(word_text_view, currentText)
+            var currentText = translate(word_text_view.text)
+            flip(word_text_view, currentText.toString())
         }
 
         // Flip button
         val flipBtn = root.findViewById<Button>(R.id.flip_button)
         flipBtn.setOnClickListener {
+
+            var currentText = translate(word_text_view.text)
+
+            /*
             var currentText = ""
             if ( word_text_view.text == "Front"){
                 currentText = "Back"
@@ -71,8 +82,8 @@ class HomeFragment : Fragment() {
                 currentText = "Another New Word"
             }else{
                 currentText = "New Word"
-            }
-            flip(word_text_view, currentText)
+            }*/
+            flip(word_text_view, currentText.toString())
         }
 
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
@@ -198,6 +209,54 @@ class HomeFragment : Fragment() {
                 this?.apply()
             }
         }
+    }
+
+    private fun translate(text: CharSequence): CharSequence {
+        ////////////////////////////////////////////////////////////
+        // Create an English-German translator:
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(TranslateLanguage.ENGLISH)
+            .setTargetLanguage(TranslateLanguage.GERMAN)
+            .build()
+        val englishGermanTranslator = Translation.getClient(options)
+
+        // Make sure the required translation model has been downloaded to the device.
+        // Don't call translate() until you know the model is available.
+        var conditions = DownloadConditions.Builder()
+            .requireWifi()
+            .build()
+
+        var isDataLoaded = false
+        englishGermanTranslator.downloadModelIfNeeded(conditions)
+            .addOnSuccessListener {
+                // Model downloaded successfully. Okay to start translating.
+                isDataLoaded = true
+                // (Set a flag, unhide the translation UI, etc.)
+            }
+            .addOnFailureListener { exception ->
+                // Model couldn’t be downloaded or other internal error.
+                // ...
+                isDataLoaded = false
+                Log.e(TAG, "Model download failed: ${exception.localizedMessage}")
+            }
+
+        // After you confirm the model has been downloaded,
+        // pass a string of text in the source language to translate()
+
+        englishGermanTranslator.translate(text.toString())
+            .addOnSuccessListener { translatedText ->
+                // Translation successful.
+            }
+            .addOnFailureListener { exception ->
+                // Error.
+                // ...
+            }
+
+        //LifecycleOwner.getLifecycle().addObserver(englishGermanTranslator)
+        //getLifecycle().addObserver(englishGermanTranslator)
+        ////////////////////////////////////////////////////////////
+        println(text)
+        return text
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
