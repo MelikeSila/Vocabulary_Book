@@ -52,6 +52,9 @@ class HomeFragment : Fragment() {
 
         loadData(root)
 
+        // setup
+        setupTranslator()
+
 
         // save data
         val saveBtn = root.findViewById<Button>(R.id.save_button)
@@ -72,17 +75,6 @@ class HomeFragment : Fragment() {
 
             var currentText = translate(word_text_view.text)
 
-            /*
-            var currentText = ""
-            if ( word_text_view.text == "Front"){
-                currentText = "Back"
-            }else if ( word_text_view.text == "Back"){
-                currentText = "Front"
-            }else if ( word_text_view.text == "New Word"){
-                currentText = "Another New Word"
-            }else{
-                currentText = "New Word"
-            }*/
             flip(word_text_view, currentText.toString())
         }
 
@@ -212,15 +204,19 @@ class HomeFragment : Fragment() {
             }
         }
     }
+    private lateinit var englishGermanTranslator: com.google.mlkit.nl.translate.Translator
 
-    private fun translate(text: CharSequence): CharSequence {
-        ////////////////////////////////////////////////////////////
-        // Create an English-German translator:
+    private fun setupTranslator() {
         val options = TranslatorOptions.Builder()
             .setSourceLanguage(TranslateLanguage.ENGLISH)
             .setTargetLanguage(TranslateLanguage.GERMAN)
             .build()
-        val englishGermanTranslator = Translation.getClient(options)
+        englishGermanTranslator = Translation.getClient(options)
+    }
+
+    private fun translate(text: CharSequence): CharSequence {
+        ////////////////////////////////////////////////////////////
+        // Create an English-German translator:
 
         // Make sure the required translation model has been downloaded to the device.
         // Don't call translate() until you know the model is available.
@@ -248,6 +244,9 @@ class HomeFragment : Fragment() {
         englishGermanTranslator.translate(text.toString())
             .addOnSuccessListener { translatedText ->
                 new_text = translatedText
+                println("translatedText Start Here---------")
+                println(translatedText)
+                println("translatedText Ends Here---------")
                 // Translation successful.
             }
             .addOnFailureListener { exception ->
@@ -258,7 +257,9 @@ class HomeFragment : Fragment() {
         //LifecycleOwner.getLifecycle().addObserver(englishGermanTranslator)
         //getLifecycle().addObserver(englishGermanTranslator)
         ////////////////////////////////////////////////////////////
+        println("Start Here---------")
         println(new_text)
+        println("Ends Here---------")
         return new_text
     }
 
@@ -270,5 +271,10 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        englishGermanTranslator.close() // Clean up translator resources
     }
 }
