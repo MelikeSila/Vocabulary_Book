@@ -178,11 +178,13 @@ class HomeFragment : Fragment() {
     private fun saveData(root: View){
         val insertedText = root.findViewById<EditText>(R.id.textView2).text.toString()
         root.findViewById<TextView>(R.id.textView).text = insertedText
+        root.findViewById<TextView>(R.id.word_text_view).text = insertedText
 
         val sharedPreferences = activity?.getSharedPreferences("EnglishSharedPreferences", Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
         editor?.apply {
             putString("STRING_KEY", insertedText)
+            putString("LAST_WORD", insertedText)
             //putBoolean("BOOLEAN_KEY", )
         }?.apply()
 
@@ -242,9 +244,10 @@ class HomeFragment : Fragment() {
 
         // After you confirm the model has been downloaded,
         // pass a string of text in the source language to translate()
-
+        var new_text = ""
         englishGermanTranslator.translate(text.toString())
             .addOnSuccessListener { translatedText ->
+                new_text = translatedText
                 // Translation successful.
             }
             .addOnFailureListener { exception ->
@@ -255,8 +258,8 @@ class HomeFragment : Fragment() {
         //LifecycleOwner.getLifecycle().addObserver(englishGermanTranslator)
         //getLifecycle().addObserver(englishGermanTranslator)
         ////////////////////////////////////////////////////////////
-        println(text)
-        return text
+        println(new_text)
+        return new_text
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
