@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
+    lateinit var word_text_view: TextView
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,6 +52,8 @@ class HomeFragment : Fragment() {
 
         loadData(root)
 
+        word_text_view =  binding.root.findViewById<TextView>(R.id.word_text_view)
+
         // setup
         setupTranslator()
 
@@ -63,10 +65,11 @@ class HomeFragment : Fragment() {
         }
 
         /// Flip the card
-        val word_text_view = root.findViewById<TextView>(R.id.word_text_view)
+
         word_text_view.setOnClickListener{
-            var currentText = translate(word_text_view.text)
-            flip(word_text_view, currentText.toString())
+            //var currentText = translate(word_text_view.text)
+            //flip(word_text_view, currentText.toString())
+            translate(word_text_view.text)
         }
 
         // Flip button
@@ -214,7 +217,7 @@ class HomeFragment : Fragment() {
         englishGermanTranslator = Translation.getClient(options)
     }
 
-    private fun translate(text: CharSequence): CharSequence {
+    private fun translate(text: CharSequence) {
         ////////////////////////////////////////////////////////////
         // Create an English-German translator:
 
@@ -243,10 +246,7 @@ class HomeFragment : Fragment() {
         var new_text = ""
         englishGermanTranslator.translate(text.toString())
             .addOnSuccessListener { translatedText ->
-                new_text = translatedText
-                println("translatedText Start Here---------")
-                println(translatedText)
-                println("translatedText Ends Here---------")
+                flip(word_text_view, translatedText)
                 // Translation successful.
             }
             .addOnFailureListener { exception ->
@@ -254,13 +254,6 @@ class HomeFragment : Fragment() {
                 // ...
             }
 
-        //LifecycleOwner.getLifecycle().addObserver(englishGermanTranslator)
-        //getLifecycle().addObserver(englishGermanTranslator)
-        ////////////////////////////////////////////////////////////
-        println("Start Here---------")
-        println(new_text)
-        println("Ends Here---------")
-        return new_text
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
