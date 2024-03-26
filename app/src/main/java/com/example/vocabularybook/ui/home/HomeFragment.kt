@@ -227,23 +227,19 @@ class HomeFragment : Fragment() {
             .requireWifi()
             .build()
 
-        var isDataLoaded = false
         englishGermanTranslator.downloadModelIfNeeded(conditions)
             .addOnSuccessListener {
                 // Model downloaded successfully. Okay to start translating.
-                isDataLoaded = true
                 // (Set a flag, unhide the translation UI, etc.)
             }
             .addOnFailureListener { exception ->
                 // Model couldn’t be downloaded or other internal error.
                 // ...
-                isDataLoaded = false
                 Log.e(TAG, "Model download failed: ${exception.localizedMessage}")
             }
 
         // After you confirm the model has been downloaded,
         // pass a string of text in the source language to translate()
-        var new_text = ""
         englishGermanTranslator.translate(text.toString())
             .addOnSuccessListener { translatedText ->
                 flip(word_text_view, translatedText)
