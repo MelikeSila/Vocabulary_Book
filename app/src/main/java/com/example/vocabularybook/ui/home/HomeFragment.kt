@@ -23,7 +23,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.vocabularybook.R
 import com.example.vocabularybook.databinding.FragmentHomeBinding
 import com.google.mlkit.common.model.DownloadConditions
-import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 
@@ -55,7 +54,9 @@ class HomeFragment : Fragment() {
         word_text_view =  binding.root.findViewById<TextView>(R.id.word_text_view)
 
         // setup
-        setupTranslator()
+        var source = "en"
+        var target = "de"
+        setupTranslator(source, target)
 
 
         // save data
@@ -65,10 +66,12 @@ class HomeFragment : Fragment() {
         }
 
         /// Flip the card
-
+        var temp = source
         word_text_view.setOnClickListener{
-            //var currentText = translate(word_text_view.text)
-            //flip(word_text_view, currentText.toString())
+            setupTranslator(source,target)
+            temp = source
+            source = target
+            target = temp
             translate(word_text_view.text)
         }
 
@@ -76,9 +79,11 @@ class HomeFragment : Fragment() {
         val flipBtn = root.findViewById<Button>(R.id.flip_button)
         flipBtn.setOnClickListener {
 
-            var currentText = translate(word_text_view.text)
-
-            flip(word_text_view, currentText.toString())
+            setupTranslator(source,target)
+            temp = source
+            source = target
+            target = temp
+            translate(word_text_view.text)
         }
 
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
@@ -209,10 +214,10 @@ class HomeFragment : Fragment() {
     }
     private lateinit var englishGermanTranslator: com.google.mlkit.nl.translate.Translator
 
-    private fun setupTranslator() {
+    private fun setupTranslator(source:String, target:String) {
         val options = TranslatorOptions.Builder()
-            .setSourceLanguage(TranslateLanguage.ENGLISH)
-            .setTargetLanguage(TranslateLanguage.GERMAN)
+            .setSourceLanguage(source)
+            .setTargetLanguage(target)
             .build()
         englishGermanTranslator = Translation.getClient(options)
     }
